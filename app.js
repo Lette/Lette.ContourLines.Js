@@ -1,4 +1,3 @@
-
 // Control knobs
 
 let cellSize = 30;
@@ -23,7 +22,6 @@ function setup() {
 
     createVertices();
 }
-
 
 function windowResized() {
     let container = select('#canvas-container');
