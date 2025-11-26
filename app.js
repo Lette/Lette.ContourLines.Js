@@ -1,11 +1,12 @@
 
 // Control knobs
 
-let cellSize = 40;
-let coordToNoiseScale = 0.04;
-let timeScale = 0.004;
+let cellSize = 30;
+let coordToNoiseScale = 0.01;
+let timeScale = 0.001;
 let thresholdStart = 30;
-let thresholdDelta = 30;
+let thresholdDelta = 1;
+let gradientFillIterations = 1;
 let showFps = true;
 
 // Global state
@@ -60,16 +61,36 @@ function updateVertices() {
 
             // Fill cell if we're not in the first row or column
             if (row > 0 && col > 0) {
-                let a = vertices[row - 1][col - 1];
-                let b = vertices[row - 1][col];
-                let c = vertices[row][col];
-                let d = vertices[row][col - 1];
+                let a = vertices[row - 1][col - 1];  // top-left
+                let b = vertices[row - 1][col];      // top-right
+                let c = vertices[row][col];          // bottom-right
+                let d = vertices[row][col - 1];      // bottom-left
                 
-                let avgAlpha = (a + b + c + d) / 4;
+                let x = (col - 1) * cellSize;
+                let y = (row - 1) * cellSize;
 
-                fill(255, 128, 32, avgAlpha);
+                // Draw as 4 smaller quads with interpolated colors
                 noStroke();
-                rect((col - 1) * cellSize, (row - 1) * cellSize, cellSize, cellSize);
+                let steps = gradientFillIterations;  // Increase for smoother gradient
+                for (let i = 0; i < steps; i++) {
+                    for (let j = 0; j < steps; j++) {
+                        let u = i / steps;
+                        let v = j / steps;
+                        let uNext = (i + 1) / steps;
+                        let vNext = (j + 1) / steps;
+                        
+                        // Bilinear interpolation
+                        let alpha = (1-u)*(1-v)*a + u*(1-v)*b + u*v*c + (1-u)*v*d;
+                        
+                        fill(255, 128, 32, alpha);
+                        rect(
+                            x + u * cellSize, 
+                            y + v * cellSize, 
+                            cellSize / steps, 
+                            cellSize / steps
+                        );
+                    }
+                }
             }
         }
     }
