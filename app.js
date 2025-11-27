@@ -1,17 +1,23 @@
 // Control knobs
 
-let cellSize = 30;
-let coordToNoiseScale = 0.01;
-let timeScale = 0.001;
-let thresholdStart = 30;
-let thresholdDelta = 1;
+let cellSize = 8;
+let coordToNoiseScale = 0.1;
+let timeScale = 0.01;
+let thresholdStart = 0;
+let thresholdDelta = 15;
 let gradientFillIterations = 1;
 let showFps = true;
+let contourColor = "black";
+let fillColor = "orange";
 
 // Global state
 
 let cols, rows;
 let vertices;
+
+let fillColorR;
+let fillColorG;
+let fillColorB;
 
 function setup() {
     let container = select('#canvas-container');
@@ -19,6 +25,10 @@ function setup() {
     canvas.parent('canvas-container');
     pixelDensity(1);
     canvas.elt.getContext('2d', { willReadFrequently: true });
+
+    fillColorR = red(fillColor);
+    fillColorG = green(fillColor);
+    fillColorB = blue(fillColor);
 
     createVertices();
 }
@@ -80,7 +90,7 @@ function updateVertices() {
                         // Bilinear interpolation
                         let alpha = (1-u)*(1-v)*a + u*(1-v)*b + u*v*c + (1-u)*v*d;
                         
-                        fill(255, 128, 32, alpha);
+                        fill(fillColorR, fillColorG, fillColorB, alpha);
                         rect(
                             x + u * cellSize, 
                             y + v * cellSize, 
@@ -96,7 +106,7 @@ function updateVertices() {
 
 function drawThresholds() {
     noFill();
-    stroke("black");
+    stroke(contourColor);
     strokeWeight(1);
     strokeCap(ROUND);
 
