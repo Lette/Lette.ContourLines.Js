@@ -185,3 +185,13 @@ function drawFps() {
     textSize(16);
     text('FPS: ' + Math.round(frameRate()), 10, 20);
 }
+
+function togglePause() {
+    if (isLooping()) {
+        noLoop();
+        document.getElementById('pauseButton').textContent = '▶';
+    } else {
+        loop();
+        document.getElementById('pauseButton').textContent = '⏸';
+    }
+}
