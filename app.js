@@ -2,7 +2,7 @@
 
 let cellSize = 8;
 let coordToNoiseScale = 0.1;
-let timeScale = 0.01;
+let timeScale = 0.0002;
 let thresholdStart = 0;
 let thresholdDelta = 15;
 let gradientFillIterations = 1;
@@ -57,7 +57,7 @@ function draw() {
 }
 
 function updateVertices() {
-    let time = frameCount * timeScale;
+    let time = Date.now() * timeScale;
     background("white");
 
     for (let row = 0; row < rows; row++) {
@@ -84,8 +84,6 @@ function updateVertices() {
                     for (let j = 0; j < steps; j++) {
                         let u = i / steps;
                         let v = j / steps;
-                        let uNext = (i + 1) / steps;
-                        let vNext = (j + 1) / steps;
                         
                         // Bilinear interpolation
                         let alpha = (1-u)*(1-v)*a + u*(1-v)*b + u*v*c + (1-u)*v*d;
