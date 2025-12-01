@@ -187,9 +187,9 @@ function drawFps() {
 function togglePause() {
     if (isLooping()) {
         noLoop();
-        document.getElementById('pauseButton').textContent = '▶';
+        document.getElementById('pauseButton').innerHTML = '&#9654;';
     } else {
         loop();
-        document.getElementById('pauseButton').textContent = '⏸';
+        document.getElementById('pauseButton').innerHTML = '&#9208;';
     }
 }
