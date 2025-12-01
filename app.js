@@ -1,8 +1,6 @@
 // Control knobs
 
 let cellSize = 8;
-let coordToNoiseScale = 0.1;
-let timeScale = 0.0002;
 let thresholdStart = 0;
 let thresholdDelta = 15;
 let gradientFillIterations = 1;
@@ -14,6 +12,7 @@ let fillColor = "orange";
 
 let cols, rows;
 let vertices;
+let noiseFn;
 
 let fillColorR;
 let fillColorG;
@@ -29,6 +28,36 @@ function setup() {
     fillColorR = red(fillColor);
     fillColorG = green(fillColor);
     fillColorB = blue(fillColor);
+    
+    function simplexNoise3D(distScale, timeScale) {
+        let simplexNoise3Dfn = createNoise3D(Math.random);
+        return function(x, y, z) {
+            return (simplexNoise3Dfn(x * distScale, y * distScale, z * timeScale) + 1) / 2; // Normalize to [0, 1]
+        }
+    }
+
+    function p5Noise3D(distScale, timeScale) {
+        return function(x, y, z) {
+            return noise(x * distScale, y * distScale, z * timeScale); // p5.js noise is already [0, 1]
+        }
+    }
+
+    function noisejsPerlin3D(distScale, timeScale) {
+        return function(x, y, z) {
+            return (noisejs.perlin3(x * distScale, y * distScale, z * timeScale) + 1) / 2; // Normalize to [0, 1]
+        }
+    }
+
+    function noisejsSimplex3D(distScale, timeScale) {
+        return function(x, y, z) {
+            return (noisejs.simplex3(x * distScale, y * distScale, z * timeScale) + 1) / 2; // Normalize to [0, 1]
+        }
+    }
+
+    //noiseFn = p5Noise3D(0.1, 0.0005);
+    //noiseFn = simplexNoise3D(0.05, 0.0002);
+    //noiseFn = noisejsPerlin3D(0.1, 0.0004);
+    noiseFn = noisejsSimplex3D(0.05, 0.0002);
 
     createVertices();
 }
@@ -57,12 +86,12 @@ function draw() {
 }
 
 function updateVertices() {
-    let time = Date.now() * timeScale;
+    let time = Date.now();
     background("white");
 
     for (let row = 0; row < rows; row++) {
         for (let col = 0; col < cols; col++) {
-            let noiseVal = noise(col * coordToNoiseScale, row * coordToNoiseScale, time);
+            let noiseVal = noiseFn(col, row, time);
             let alpha = noiseVal * 255;
             
             vertices[row][col] = alpha;

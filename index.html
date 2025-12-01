@@ -4,6 +4,11 @@
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="styles.css">
     <script src="p5.min.js"></script>
+    <script type="module">
+      import { createNoise3D } from './simplex-noise.js';
+      window.createNoise3D = createNoise3D;
+    </script>
+    <script src="noisejs.js"></script>
   </head>
   <body>
     <script src="app.js" defer></script>
