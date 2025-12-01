@@ -14,6 +14,12 @@
     <script src="app.js" defer></script>
     <div id="main">
       <div id="canvas-container"></div>
+      <select id="noiseSelect" onchange="changeNoiseFunction()">
+        <option value="p5Noise" selected>p5.js Noise</option>
+        <option value="simplexNoise">Simplex Noise</option>
+        <option value="noisejsPerlin">Noise.js Perlin</option>
+        <option value="noisejsSimplex">Noise.js Simplex</option>
+      </select>
       <button id="pauseButton" onclick="togglePause()">&#9208;</button>
     </div>
   </body>

@@ -18,6 +18,31 @@ let fillColorR;
 let fillColorG;
 let fillColorB;
 
+function simplexNoise3D(distScale, timeScale) {
+    let simplexNoise3Dfn = createNoise3D(Math.random);
+    return function(x, y, z) {
+        return (simplexNoise3Dfn(x * distScale, y * distScale, z * timeScale) + 1) / 2; // Normalize to [0, 1]
+    }
+}
+
+function p5Noise3D(distScale, timeScale) {
+    return function(x, y, z) {
+        return noise(x * distScale, y * distScale, z * timeScale); // p5.js noise is already [0, 1]
+    }
+}
+
+function noisejsPerlin3D(distScale, timeScale) {
+    return function(x, y, z) {
+        return (noisejs.perlin3(x * distScale, y * distScale, z * timeScale) + 1) / 2; // Normalize to [0, 1]
+    }
+}
+
+function noisejsSimplex3D(distScale, timeScale) {
+    return function(x, y, z) {
+        return (noisejs.simplex3(x * distScale, y * distScale, z * timeScale) + 1) / 2; // Normalize to [0, 1]
+    }
+}
+
 function setup() {
     let container = select('#canvas-container');
     let canvas = createCanvas(container.width, container.height);
@@ -29,35 +54,7 @@ function setup() {
     fillColorG = green(fillColor);
     fillColorB = blue(fillColor);
     
-    function simplexNoise3D(distScale, timeScale) {
-        let simplexNoise3Dfn = createNoise3D(Math.random);
-        return function(x, y, z) {
-            return (simplexNoise3Dfn(x * distScale, y * distScale, z * timeScale) + 1) / 2; // Normalize to [0, 1]
-        }
-    }
-
-    function p5Noise3D(distScale, timeScale) {
-        return function(x, y, z) {
-            return noise(x * distScale, y * distScale, z * timeScale); // p5.js noise is already [0, 1]
-        }
-    }
-
-    function noisejsPerlin3D(distScale, timeScale) {
-        return function(x, y, z) {
-            return (noisejs.perlin3(x * distScale, y * distScale, z * timeScale) + 1) / 2; // Normalize to [0, 1]
-        }
-    }
-
-    function noisejsSimplex3D(distScale, timeScale) {
-        return function(x, y, z) {
-            return (noisejs.simplex3(x * distScale, y * distScale, z * timeScale) + 1) / 2; // Normalize to [0, 1]
-        }
-    }
-
-    //noiseFn = p5Noise3D(0.1, 0.0005);
-    //noiseFn = simplexNoise3D(0.05, 0.0002);
-    //noiseFn = noisejsPerlin3D(0.1, 0.0004);
-    noiseFn = noisejsSimplex3D(0.05, 0.0002);
+    noiseFn = p5Noise3D(0.1, 0.0005);
 
     createVertices();
 }
@@ -220,5 +217,25 @@ function togglePause() {
     } else {
         loop();
         document.getElementById('pauseButton').innerHTML = '&#9208;';
+    }
+}
+
+function changeNoiseFunction() {
+    let select = document.getElementById('noiseSelect');
+    let value = select.value;
+    
+    switch(value) {
+        case 'p5Noise':
+            noiseFn = p5Noise3D(0.1, 0.0005);
+            break;
+        case 'simplexNoise':
+            noiseFn = simplexNoise3D(0.05, 0.0002);
+            break;
+        case 'noisejsPerlin':
+            noiseFn = noisejsPerlin3D(0.1, 0.0004);
+            break;
+        case 'noisejsSimplex':
+            noiseFn = noisejsSimplex3D(0.05, 0.0002);
+            break;
     }
 }
